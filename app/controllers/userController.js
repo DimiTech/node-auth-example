@@ -1,4 +1,5 @@
 const userRepository = require('../repositories/userRepository')
+const { generateSalt, hashPassword } = require('../util/crypto')
 
 const getAll = async (_req, res) => {
   const users = await userRepository.getAll()
@@ -15,7 +16,13 @@ const getOne = async (req, res) => {
 }
 
 const create = async (req, res) => {
-  const newUserData = req.body
+  const salt = await generateSalt()
+  const passwordHash = await hashPassword(req.body.password, salt)
+  newUserData = {
+    ...req.body,
+    salt,
+    password: passwordHash,
+  }
   const createdUser = await userRepository.insert(newUserData)
   res.status(201)
   return res.json(createdUser)
@@ -24,6 +31,10 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const userId = parseInt(req.params.id, 10)
   const updateUserData = req.body
+
+  const disallowedProperties = [ 'password', 'id' ]
+  disallowedProperties.forEach(key => delete updateUserData[key])
+
   const updatedUser = await userRepository.update(userId, updateUserData)
   if (!updatedUser) {
     return res.status(404).end()

@@ -8,10 +8,10 @@ app.set('port', 3000)
 
 app.use(bodyParser.json())
 
-app.get('/users', userController.getAll)
-app.get('/users/:id', userController.getOne)
-app.post('/users', userController.create)
-app.put('/users/:id', userController.update)
+app.post(  '/users',     userController.create)
+app.get(   '/users',     userController.getAll)
+app.get(   '/users/:id', userController.getOne)
+app.put(   '/users/:id', userController.update)
 app.delete('/users/:id', userController.deleteOne)
 
 app.listen(

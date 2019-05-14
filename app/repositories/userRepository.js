@@ -16,8 +16,9 @@ const insert = async userData => {
 const update = async (userId, userData) => {
   const findIndex = userStorage.findIndex(u => u.id === userId)
   if (findIndex < 0) return
+  const foundUserData = userStorage[findIndex]
   return userStorage[findIndex] = {
-    id: userId,
+    ...foundUserData,
     ...userData
   }
 }

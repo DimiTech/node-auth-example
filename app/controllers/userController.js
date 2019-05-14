@@ -12,7 +12,7 @@ const logIn = async (req, res) => {
   if (!passwordHashMatches(password, user.salt, user.password)) {
     return res.status(401).end()
   }
-  const token = await generateToken({ role: user.role, username: user.username })
+  const token = await generateToken(user)
   return res.status(200).json({ jwt: token })
 }
 

@@ -4,27 +4,21 @@ const {
   generateToken,
   verifyToken,
 } = require('../../../app/util/jwt')
+const ROLES = require('../../../app/constants/roles')
 
 describe('JWT', () => {
   it('Properly generates and validates a JWT', async () => {
-    const dummyPayload = {
-      data1: 'Test 1',
-      data2: 'Test 2',
-      data3: 'Test 3',
-      data4: 'Test 4',
+    const dummyUser = {
+      role: ROLES.USER,
+      username: 'test_user',
     }
 
-    const token = await generateToken(dummyPayload)
+    const token = await generateToken(dummyUser)
     expect(typeof token).to.equal('string')
     expect(token.match(/\./g).length).to.equal(2)
     expect(token.length).to.be.greaterThan(500)
     const decoded = await verifyToken(token)
-    const tokenPayload = {
-      data1: decoded.data1,
-      data2: decoded.data2,
-      data3: decoded.data3,
-      data4: decoded.data4,
-    }
-    expect(tokenPayload).to.deep.equal(dummyPayload)
+    expect(decoded.role).to.deep.equal(dummyUser.role)
+    expect(decoded.sub).to.deep.equal(dummyUser.username)
   })
 })

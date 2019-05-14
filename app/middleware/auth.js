@@ -15,7 +15,8 @@ function authorize(role = ROLES.USER) {
         // Unauthorized!
         return res.status(403).end()
       }
-      const username = decoded.username
+      // "sub" (subject) is the unique user identifier, in this case it's the username
+      const username = decoded.sub
       // TODO: Principal?
       req.user = await userRepository.getOneByUsername(username)
       next()

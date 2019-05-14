@@ -8,6 +8,10 @@ const getOneById = async id => {
   return [ ...userStorage ].find(u => u.id === id)
 }
 
+const getOneByUsername = async username => {
+  return [ ...userStorage ].find(u => u.username === username)
+}
+
 const insert = async userData => {
   userStorage.push(userData)
   return [ ...userStorage ].pop()
@@ -33,6 +37,7 @@ const deleteOne = async userId => {
 module.exports = {
   getAll,
   getOneById,
+  getOneByUsername,
   insert,
   update,
   deleteOne,

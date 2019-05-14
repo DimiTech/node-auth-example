@@ -1,5 +1,20 @@
+const ROLES = require('../constants/roles')
 const userRepository = require('../repositories/userRepository')
-const { generateSalt, hashPassword } = require('../util/crypto')
+const { generateSalt, hashPassword, passwordHashMatches } = require('../util/crypto')
+const { generateToken } = require('../util/jwt')
+
+const logIn = async (req, res) => {
+  const { username, password } = req.body
+  const user = await userRepository.getOneByUsername(username)
+  if (!user) {
+    return res.status(404).end()
+  }
+  if (!passwordHashMatches(password, user.salt, user.password)) {
+    return res.status(401).end()
+  }
+  const token = await generateToken({ role: user.role, username: user.username })
+  return res.status(200).json({ jwt: token })
+}
 
 const getAll = async (_req, res) => {
   const users = await userRepository.getAll()
@@ -12,6 +27,9 @@ const getOne = async (req, res) => {
   if (!user) {
     return res.status(404).end()
   }
+  if (req.user.role < ROLES.ADMIN && req.user.id !== id) {
+    return res.status(403).end()
+  }
   return res.json(user)
 }
 
@@ -22,6 +40,7 @@ const create = async (req, res) => {
     ...req.body,
     salt,
     password: passwordHash,
+    role: ROLES.USER,
   }
   const createdUser = await userRepository.insert(newUserData)
   res.status(201)
@@ -31,6 +50,10 @@ const create = async (req, res) => {
 const update = async (req, res) => {
   const userId = parseInt(req.params.id, 10)
   const updateUserData = req.body
+
+  if (req.user.role < ROLES.ADMIN && req.user.id !== userId) {
+    return res.status(403).end()
+  }
 
   const disallowedProperties = [ 'password', 'id' ]
   disallowedProperties.forEach(key => delete updateUserData[key])
@@ -44,6 +67,11 @@ const update = async (req, res) => {
 
 const deleteOne = async (req, res) => {
   const id = parseInt(req.params.id, 10)
+
+  if (req.user.role < ROLES.ADMIN && req.user.id !== id) {
+    return res.status(403).end()
+  }
+
   const user = await userRepository.deleteOne(id)
   if (!user) {
     return res.status(404).end()
@@ -52,6 +80,7 @@ const deleteOne = async (req, res) => {
 }
 
 module.exports = {
+  logIn,
   getAll,
   getOne,
   create,

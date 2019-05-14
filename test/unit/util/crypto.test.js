@@ -3,11 +3,11 @@ const { expect } = require('chai')
 const {
   generateSalt,
   hashPassword,
-  passwordMatches
+  passwordHashMatches
 } = require('../../../app/util/crypto')
 
 
-describe('Hashing / Password Matching', () => {
+describe('Crypto Utilities', () => {
   const plainTextPassword = 'pass3'
   let salt
   let passwordHash
@@ -26,9 +26,9 @@ describe('Hashing / Password Matching', () => {
     })
   })
 
-  describe('passwordMatches()', () => {
+  describe('passwordHashMatches()', () => {
     it('Determines if a salted plain-text password hash matches the given hash', async () => {
-      const match = await passwordMatches(plainTextPassword, salt, passwordHash)
+      const match = await passwordHashMatches(plainTextPassword, salt, passwordHash)
       expect(match).to.be.true
     })
   })

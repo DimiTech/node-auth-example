@@ -14,7 +14,7 @@ async function hashPassword(password, salt) {
   return derivedKey.toString('hex')
 }
 
-async function passwordMatches(password, salt, hashedPassword) {
+async function passwordHashMatches(password, salt, hashedPassword) {
   const derivedKey = await hashPassword(password, salt)
   return derivedKey.toString('hex') === hashedPassword
 }
@@ -22,5 +22,5 @@ async function passwordMatches(password, salt, hashedPassword) {
 module.exports = {
   generateSalt,
   hashPassword,
-  passwordMatches,
+  passwordHashMatches,
 }

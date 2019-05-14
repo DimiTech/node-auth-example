@@ -9,23 +9,27 @@ const {
 
 describe('Hashing / Password Matching', () => {
   const plainTextPassword = 'pass3'
-  let savedSalt 
-  let savedPasswordHash
+  let salt
+  let passwordHash
 
-  it('Generates a "salt" Buffer and returns its Hexadecimal string representation', async () => {
-    const salt = await generateSalt()
-    expect(salt.length).to.equal(64)
-    savedSalt = salt
+  describe('generateSalt()', () => {
+    it('Generates a "salt" Buffer and returns its Hexadecimal string representation', async () => {
+      salt = await generateSalt()
+      expect(salt.length).to.equal(64)
+    })
   })
 
-  it('Produces a "salt" and a "hashedPassword" from a plain-text "password"', async () => {
-    const passwordHash = await hashPassword(plainTextPassword, savedSalt)
-    expect(passwordHash.length).to.equal(1024)
-    savedPasswordHash = passwordHash
+  describe('hashPassword()', () => {
+    it('Produces "hashedPassword" from a plain-text "password" and a Hexadecimal string "salt"', async () => {
+      passwordHash = await hashPassword(plainTextPassword, salt)
+      expect(passwordHash.length).to.equal(1024)
+    })
   })
 
-  it('Confirms that a plain-text password hash matches', async () => {
-    const match = await passwordMatches(plainTextPassword, savedSalt, savedPasswordHash)
-    expect(match).to.be.true
+  describe('passwordMatches()', () => {
+    it('Determines if a salted plain-text password hash matches the given hash', async () => {
+      const match = await passwordMatches(plainTextPassword, salt, passwordHash)
+      expect(match).to.be.true
+    })
   })
 })

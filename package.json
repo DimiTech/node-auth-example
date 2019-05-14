@@ -1,0 +1,20 @@
+{
+  "name": "node-auth-example",
+  "version": "0.0.1",
+  "description": "Authentication/authorization example",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "security",
+    "password",
+    "hash",
+    "salting",
+    "authentication",
+    "authorization"
+  ],
+  "repository": "https://github.com/DusanDimitric/node-auth-example.git",
+  "author": "Dušan Dimitrić <dusan_dimitric@yahoo.com>",
+  "license": "MIT"
+}
